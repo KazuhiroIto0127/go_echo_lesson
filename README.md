@@ -25,6 +25,11 @@ $ sqlite3 example.sql
 > .exit
 ```
 
+## 本番環境
+
+```
+docker compose up -d prod
+```
 
 参考にさせていただきました。
 

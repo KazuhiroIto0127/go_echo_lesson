@@ -29,6 +29,6 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY --from=builder /app/main ./main
-COPY ./example.db ./sqlite.db
+COPY --from=builder /app/example.sql ./example.sql
 
 CMD ["./main"]
