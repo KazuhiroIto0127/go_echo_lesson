@@ -12,32 +12,46 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+const (
+	databasePath = "./example.sql"
+	serverAddr = ":8080"
+)
+
 func main(){
 	e := echo.New()
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	e.GET("/", hello)
-	e.GET("/insert", insert)
+	db, err := initDB(databasePath)
+	if err != nil {
+		log.Fatalf("Could not connect to the database: %v", err)
+	}
+	defer db.Close()
+
+	e.GET("/", func(c echo.Context) error { return index(c, db) })
+	e.GET("/insert", func(c echo.Context) error { return insert(c, db) })
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
 
-func insert(c echo.Context) error {
-	db, err := sql.Open("sqlite3", "./example.sql")
+func initDB(path string) (*sql.DB, error) {
+	db, err := sql.Open("sqlite3", path)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	defer db.Close()
+	return db, nil
+}
+
+func insert(c echo.Context, db *sql.DB) error {
 	stmt, err := db.Prepare("INSERT INTO users (name, age, email) VALUES (?, ?, ?)")
 	if err != nil {
-		log.Fatal(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "データベースエラー"})
 	}
 	defer stmt.Close()
 
 	if _, err = stmt.Exec("Kazu", 33, "xxxxxx@omomuro.dev"); err != nil {
-		log.Fatal(err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "データ挿入エラー"})
 	}
 
 	return c.String(http.StatusOK, "inserted.")
@@ -50,13 +64,7 @@ type User struct {
 	Email sql.NullString `json:"email"`
 }
 
-func hello(c echo.Context) error {
-	db, err := sql.Open("sqlite3", "./example.sql")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-
+func index(c echo.Context, db *sql.DB) error {
 	cmd := "SELECT * FROM users"
 	rows, err := db.Query(cmd)
 	if err != nil {
