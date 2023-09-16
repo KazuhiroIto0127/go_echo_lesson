@@ -16,9 +16,11 @@ RUN go install github.com/cosmtrek/air@v1.27.3
 RUN go install github.com/ramya-rao-a/go-outline@latest
 RUN go install golang.org/x/tools/gopls@latest
 
-RUN go build -o main .
+RUN go build -o main ./cmd/myapp/main.go
 
 EXPOSE 8080
+
+CMD ["air"]
 
 # -----------
 # production環境

@@ -1,0 +1,8 @@
+root = "."
+tmp_dir = "tmp"
+cmd = "/app/cmd/myapp/main"
+
+[build]
+bin = "main"
+path = "cmd/app/"
+cmd = "go build -o main ./cmd/myapp/"
