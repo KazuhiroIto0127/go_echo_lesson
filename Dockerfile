@@ -1,5 +1,8 @@
 FROM golang:1.21.1
 
+# ログに出力する時間をJSTにするため、タイムゾーンを設定
+ENV TZ /usr/share/zoneinfo/Asia/Tokyo
+
 WORKDIR /app
 COPY ./ /app
 
