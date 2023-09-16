@@ -1,12 +1,22 @@
 version: "3.8"
 services:
-  api:
+  dev:
     build:
       context: .
       dockerfile: Dockerfile
+      target: builder
     ports:
       - "8080:8080"
     container_name: go-echo-lesson
     tty: true
     volumes:
       - ./:/app
+  prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    ports:
+      - "8081:8080"
+    container_name: go-echo-prod
+    tty: true
