@@ -5,6 +5,7 @@ COPY ./ /app
 
 RUN apt-get update && apt-get install -y build-essential make
 
+RUN go install github.com/cosmtrek/air@v1.27.3
 RUN go install github.com/ramya-rao-a/go-outline@latest
 RUN go install golang.org/x/tools/gopls@latest
 
@@ -16,4 +17,4 @@ ENV CGO_ENABLED=0 \
 
 EXPOSE 8080
 
-CMD ["go", "run", "server.go"]
+CMD ["air"]
