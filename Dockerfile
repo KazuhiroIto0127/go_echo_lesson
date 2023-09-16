@@ -20,8 +20,6 @@ RUN go build -o main ./cmd/myapp/main.go
 
 EXPOSE 8080
 
-CMD ["air"]
-
 # -----------
 # production環境
 # -----------
